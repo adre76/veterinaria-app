@@ -21,6 +21,7 @@ RUN pip install psycopg2-binary
 
 # Copy application code
 COPY backend/veterinaria_api/src ./src
+COPY frontend/ ./src/static/
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app && chown -R app:app /app
