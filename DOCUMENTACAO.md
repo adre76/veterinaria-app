@@ -1,200 +1,9 @@
-# Sistema de Gestão Veterinária - LiviaVet
+"""
+# Documento de Instruções de Deploy
 
-## Visão Geral
+Este documento fornece instruções detalhadas para o deploy do sistema de gestão veterinária, tanto localmente com Docker quanto em um cluster Kubernetes (Rancher RKE2).
 
-O Sistema de Gestão Veterinária LiviaVet é uma aplicação web completa desenvolvida em Python Flask com banco de dados PostgreSQL, projetada para gerenciar atendimentos veterinários de forma eficiente e organizada.
-
-## Funcionalidades
-
-### Autenticação
-- Login fixo com credenciais predefinidas
-- Usuário: `liviavet`
-- Senha: `Gorete00`
-- Controle de sessão com logout
-
-### Módulos do Sistema
-
-#### 1. Cadastro de Proprietários
-- Nome completo
-- Telefone de contato
-- Endereço completo
-- Campo de observações
-- Listagem e exclusão de registros
-
-#### 2. Cadastro de Medicamentos
-- Nome do medicamento
-- Laboratório fabricante
-- Apresentação (caixa, ampola, comprimido)
-- Valor de compra
-- Margem de lucro (%)
-- Cálculo automático do valor de venda
-- Listagem e exclusão de registros
-
-#### 3. Cadastro de Animais
-- Nome do animal
-- Raça
-- Proprietário (seleção via dropdown)
-- Data de nascimento
-- Campo de observações
-- Listagem e exclusão de registros
-
-#### 4. Registro de Consultas
-- Data da consulta (padrão: data atual)
-- Animal (seleção via dropdown)
-- Proprietário (preenchimento automático)
-- Observações da consulta
-- Medicamentos e procedimentos com dosagens
-- Listagem e exclusão de registros
-
-## Arquitetura Técnica
-
-### Backend
-- **Framework**: Flask 3.1.1
-- **Banco de Dados**: PostgreSQL 15
-- **ORM**: SQLAlchemy
-- **Autenticação**: Flask Sessions
-- **CORS**: Flask-CORS para integração frontend/backend
-
-### Frontend
-- **Interface**: HTML5, CSS3, JavaScript (Vanilla)
-- **Design**: Responsivo com gradientes e animações
-- **UX**: Single Page Application (SPA) com navegação dinâmica
-
-### Banco de Dados
-Estrutura das tabelas:
-
-#### Proprietários
-- id (Primary Key)
-- nome (VARCHAR 255)
-- telefone (VARCHAR 20)
-- endereco (TEXT)
-- observacao (TEXT)
-
-#### Medicamentos
-- id (Primary Key)
-- nome (VARCHAR 255)
-- laboratorio (VARCHAR 255)
-- apresentacao (VARCHAR 50)
-- valor_compra (DECIMAL 10,2)
-- margem_lucro (DECIMAL 5,2)
-- valor_venda (DECIMAL 10,2)
-
-#### Animais
-- id (Primary Key)
-- nome (VARCHAR 255)
-- raca (VARCHAR 255)
-- observacao (TEXT)
-- data_nascimento (DATE)
-- proprietario_id (Foreign Key)
-
-#### Consultas
-- id (Primary Key)
-- data_consulta (DATE)
-- animal_id (Foreign Key)
-- observacoes (TEXT)
-- medicamentos_procedimentos (TEXT)
-
-## Deployment no Kubernetes
-
-### Pré-requisitos
-- Cluster Kubernetes (Rancher RKE2)
-- kubectl configurado
-- StorageClass `local-path` disponível
-- Nginx Ingress Controller
-
-### Componentes do Deployment
-
-#### 1. Namespace
-- Nome: `veterinaria`
-- Isolamento de recursos
-
-#### 2. PostgreSQL
-- **Deployment**: postgres
-- **Service**: postgres-service (ClusterIP)
-- **PVC**: postgres-pvc (5Gi, local-path)
-- **Credenciais**:
-  - Database: veterinaria_db
-  - User: veterinaria_user
-  - Password: veterinaria_password
-
-#### 3. Aplicação Flask
-- **Deployment**: veterinaria-app (2 réplicas)
-- **Service**: veterinaria-service (ClusterIP)
-- **ConfigMap**: veterinaria-config
-- **Porta**: 8080
-
-#### 4. Ingress
-- **Host**: veterinaria.local
-- **Controller**: nginx
-- **SSL**: Desabilitado (desenvolvimento)
-
-### Recursos e Limites
-```yaml
-resources:
-  requests:
-    memory: "256Mi"
-    cpu: "250m"
-  limits:
-    memory: "512Mi"
-    cpu: "500m"
-```
-
-### Health Checks
-- **Liveness Probe**: HTTP GET / (porta 8080)
-- **Readiness Probe**: HTTP GET / (porta 8080)
-
-## Instruções de Deploy
-
-### 1. Construir a Imagem Docker
-```bash
-cd veterinaria_app
-docker build -t veterinaria-app:latest .
-```
-
-### 2. Fazer Push da Imagem
-```bash
-# Tag para seu registry
-docker tag veterinaria-app:latest seu-registry/veterinaria-app:latest
-docker push seu-registry/veterinaria-app:latest
-```
-
-### 3. Atualizar o Deployment
-Edite o arquivo `kubernetes/veterinaria-deployment.yaml` e altere a imagem:
-```yaml
-image: seu-registry/veterinaria-app:latest
-```
-
-### 4. Executar o Deploy
-```bash
-cd kubernetes
-chmod +x deploy.sh
-./deploy.sh
-```
-
-### 5. Configurar Acesso
-Adicione ao `/etc/hosts`:
-```
-<IP_DO_CLUSTER> veterinaria.local
-```
-
-### 6. Verificar o Deploy
-```bash
-kubectl get pods -n veterinaria
-kubectl get services -n veterinaria
-kubectl get ingress -n veterinaria
-```
-
-## Acesso à Aplicação
-
-### URL
-- **Desenvolvimento**: http://localhost:8080
-- **Produção**: http://veterinaria.local
-
-### Credenciais
-- **Usuário**: liviavet
-- **Senha**: Gorete00
-
-## Estrutura de Arquivos
+## Estrutura do Projeto
 
 ```
 veterinaria_app/
@@ -203,7 +12,7 @@ veterinaria_app/
 │       ├── src/
 │       │   ├── models/          # Modelos SQLAlchemy
 │       │   ├── routes/          # Rotas da API
-│       │   ├── static/          # Frontend (HTML, CSS, JS)
+│       │   ├── static/          # Conteúdo estático do frontend (HTML, CSS, JS)
 │       │   ├── main.py          # Aplicação principal (SQLite)
 │       │   └── main_postgres.py # Aplicação principal (PostgreSQL)
 │       ├── venv/                # Ambiente virtual Python
@@ -213,105 +22,131 @@ veterinaria_app/
 │   ├── configmap.yaml          # Configurações
 │   ├── postgres-pvc.yaml       # PVC PostgreSQL
 │   ├── postgres-deployment.yaml # Deployment PostgreSQL
-│   ├── postgres-service.yaml   # Service PostgreSQL
+│   ├── postgres-service.yaml    # Service PostgreSQL
 │   ├── veterinaria-deployment.yaml # Deployment App
-│   ├── veterinaria-service.yaml    # Service App
+│   ├── veterinaria- Linter.yaml    # Service App
 │   ├── ingress.yaml            # Ingress
 │   └── deploy.sh               # Script de deploy
 ├── Dockerfile                  # Imagem Docker
 └── README.md                   # Documentação básica
 ```
 
-## Monitoramento e Logs
+## Instruções de Deploy Detalhadas
 
-### Verificar Logs
+### Cenário 1: Deploy Local com Docker
+
+Se você deseja testar a aplicação localmente usando Docker, siga os passos abaixo. Certifique-se de estar no diretório raiz do projeto (`/home/ubuntu/veterinaria_app`).
+
+#### 1. Construir a Imagem Docker
+
+Navegue até o diretório raiz do projeto e execute o comando para construir a imagem Docker. Este comando lerá o `Dockerfile` e criará uma imagem chamada `veterinaria-app` com a tag `latest`.
+
 ```bash
-# Logs da aplicação
-kubectl logs -f deployment/veterinaria-app -n veterinaria
-
-# Logs do PostgreSQL
-kubectl logs -f deployment/postgres -n veterinaria
+docker build -t veterinaria-app:latest .
 ```
 
-### Verificar Status
-```bash
-# Status dos pods
-kubectl get pods -n veterinaria -w
+#### 2. Rodar o Contêiner PostgreSQL
 
-# Descrição detalhada
-kubectl describe pod <pod-name> -n veterinaria
+Agora, inicie o contêiner do PostgreSQL. Este contêiner será o banco de dados para a sua aplicação Flask.
+
+```bash
+$ docker run -d --name veterinaria-postgres \
+  -e POSTGRES_DB=veterinaria_db \
+  -e POSTGRES_USER=veterinaria_user \
+  -e POSTGRES_PASSWORD=veterinaria_password \
+  -p 5432:5432 \
+  postgres:15
 ```
 
-## Backup e Restore
+#### 3. Rodar o Contêiner da Aplicação Flask
 
-### Backup do Banco
+Em seguida, inicie o contêiner da sua aplicação Flask, conectando-o à rede do PostgreSQL. A aplicação Flask se conectará ao banco de dados usando o nome do serviço `postgres-service` (que será resolvido para o IP do contêiner PostgreSQL dentro da rede Docker).
+
 ```bash
-kubectl exec -it deployment/postgres -n veterinaria -- pg_dump -U veterinaria_user veterinaria_db > backup.sql
+$ docker run -d --name veterinaria-flask \
+  --link veterinaria-postgres:postgres-service \
+  -e DATABASE_URL="postgresql://veterinaria_user:veterinaria_password@postgres-service:5432/veterinaria_db" \
+  -p 8080:8080 \
+  veterinaria-app:latest
 ```
 
-### Restore do Banco
-```bash
-kubectl exec -i deployment/postgres -n veterinaria -- psql -U veterinaria_user veterinaria_db < backup.sql
+#### 4. Acessar a Aplicação
+
+Após os contêineres estarem rodando, você pode acessar a aplicação no seu navegador:
+
+```
+http://localhost:8080
 ```
 
-## Troubleshooting
+**Credenciais de Login:**
+- **Usuário**: `liviavet`
+- **Senha**: `Gorete00`
 
-### Problemas Comuns
+### Cenário 2: Deploy no Kubernetes (Rancher RKE2)
 
-#### 1. Pod não inicia
-- Verificar logs: `kubectl logs <pod-name> -n veterinaria`
-- Verificar recursos disponíveis
-- Verificar se a imagem existe
+Para o deploy no Kubernetes, você precisará de um cluster Rancher RKE2 configurado e o `kubectl` apontando para ele. Certifique-se de que o `StorageClass` `local-path` esteja disponível no seu cluster.
 
-#### 2. Banco não conecta
-- Verificar se o PostgreSQL está rodando
-- Verificar credenciais no ConfigMap
-- Verificar conectividade de rede
+#### 1. Fazer Push da Imagem Docker para um Registry
 
-#### 3. Ingress não funciona
-- Verificar se o Nginx Ingress está instalado
-- Verificar configuração do DNS/hosts
-- Verificar se o service está expondo a porta correta
+Seu cluster Kubernetes precisará acessar a imagem Docker. Você deve fazer o push da imagem construída localmente para um registry (por exemplo, Docker Hub, Google Container Registry, etc.).
 
-### Comandos Úteis
 ```bash
-# Reiniciar deployment
-kubectl rollout restart deployment/veterinaria-app -n veterinaria
-
-# Escalar aplicação
-kubectl scale deployment/veterinaria-app --replicas=3 -n veterinaria
-
-# Acessar shell do pod
-kubectl exec -it <pod-name> -n veterinaria -- /bin/bash
-
-# Port forward para teste local
-kubectl port-forward service/veterinaria-service 8080:80 -n veterinaria
+docker tag veterinaria-app:latest seu-registry/veterinaria-app:latest
+docker push seu-registry/veterinaria-app:latest
 ```
 
-## Segurança
+**Importante**: Edite o arquivo `kubernetes/veterinaria-deployment.yaml` e altere a linha `image: veterinaria-app:latest` para `image: seu-registry/veterinaria-app:latest` com o caminho completo da sua imagem no registry.
 
-### Considerações de Segurança
-- Credenciais hardcoded apenas para desenvolvimento
-- Em produção, usar Secrets do Kubernetes
-- Implementar HTTPS com certificados TLS
-- Configurar Network Policies
-- Implementar RBAC adequado
+#### 2. Executar o Script de Deploy
 
-### Melhorias Futuras
-- Autenticação com JWT
-- Criptografia de senhas
-- Auditoria de ações
-- Backup automático
-- Monitoramento com Prometheus/Grafana
+Navegue até o diretório `kubernetes` dentro do seu projeto e execute o script de deploy. Este script aplicará todos os arquivos YAML necessários para criar o namespace, o banco de dados PostgreSQL, a aplicação Flask e o Ingress.
 
-## Suporte
+```bash
+./deploy.sh
+```
 
-Para suporte técnico ou dúvidas sobre o sistema, consulte:
-- Documentação do código nos arquivos fonte
-- Logs da aplicação
-- Esta documentação
+#### 3. Configurar Acesso (Ingress)
 
----
+Para acessar a aplicação de fora do cluster, você precisará configurar o Ingress. O arquivo `ingress.yaml` já está configurado para usar o host `veterinaria.local`. Você precisará adicionar uma entrada no seu arquivo `/etc/hosts` (no seu computador local, não no servidor do Kubernetes) que aponte `veterinaria.local` para o IP do seu Ingress Controller (ou o IPs dos nós do seu cluster, se você estiver usando um LoadBalancer ou NodePort para o Ingress Controller).
 
-**Sistema desenvolvido para gestão veterinária com foco em simplicidade e eficiência.**
+Exemplo de entrada no `/etc/hosts`:
+
+```
+<IP_DO_SEU_CLUSTER> veterinaria.local
+```
+
+Para encontrar o IP do seu cluster, você pode usar:
+```bash
+kubectl get nodes -l topology.kubernetes.io/zone=control-plane-zone -o wide
+```
+Ou, se você tiver um serviço Ingress com um IP externo:
+```bash
+kubectl get services -n ingress-nginx
+```
+
+#### 4. Verificar o Status do Deploy
+
+Você pode verificar o status dos seus pods, serviços e ingress com os seguintes comandos:
+
+```bash
+kubectl get pods -n veterinaria
+kubectl get services -n veterinaria
+kubectl get ingress -n veterinaria
+```
+
+#### 5. Acessar a Aplicação no Modo Kubernetes
+
+Após a configuração do `/etc/hosts` e o deploy bem-sucedido, o sistema estará acessível no seu navegador:
+
+```
+http://veterinaria.local
+```
+
+**Credenciais de Login (as mesmas do deploy local):**
+- **Usuário**: `liviavet`
+- **Senha**: `Gorete00`
+
+"""
+
+
 
