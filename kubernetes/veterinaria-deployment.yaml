@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: veterinaria-app
-        image: docker.io/vetpython/veterinaria-app:latest
+        image: docker.io/vetpython/vetpython:latest
         ports:
         - containerPort: 8080
         env:
