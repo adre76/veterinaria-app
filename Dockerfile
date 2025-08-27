@@ -40,4 +40,3 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 
 # Run the application
 CMD ["python", "-c", "import sys; sys.path.insert(0, '.'); from src.main_postgres import app; app.run(host='0.0.0.0', port=8080, debug=False)"]
-
