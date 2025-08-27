@@ -7,4 +7,3 @@ data:
   DATABASE_URL: "postgresql://veterinaria_user:veterinaria_password@postgres-service:5432/veterinaria_db"
   FLASK_ENV: "production"
   SECRET_KEY: "asdf#FGSgvasgf$5$WGT"
-
