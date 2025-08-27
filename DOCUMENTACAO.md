@@ -139,7 +139,7 @@ kubectl get ingress -n veterinaria
 Após a configuração do `/etc/hosts` e o deploy bem-sucedido, o sistema estará acessível no seu navegador:
 
 ```
-http://ubuntu-master.com
+http://veterinaria.local
 ```
 
 **Credenciais de Login (as mesmas do deploy local):**
