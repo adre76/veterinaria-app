@@ -13,7 +13,9 @@ from src.routes.animal import animal_bp
 from src.routes.consulta import consulta_bp
 from src.routes.auth import auth_bp
 
-app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'frontend'))
+#app = Flask(__name__, static_folder=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'frontend'))
+app = Flask(__name__, static_folder=os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../frontend')))
+
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
 
 # Habilitar CORS para permitir requisições do frontend
