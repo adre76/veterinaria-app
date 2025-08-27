@@ -4,7 +4,6 @@ metadata:
   name: veterinaria-ingress
   namespace: veterinaria
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   ingressClassName: nginx
@@ -19,4 +18,3 @@ spec:
             name: veterinaria-service
             port:
               number: 80
-
