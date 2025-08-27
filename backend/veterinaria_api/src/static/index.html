@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Veterinária - LiviaVet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Login -->
+        <div id="login-screen" class="screen">
+            <div class="login-container">
+                <div class="login-header">
+                    <h1>🐾 LiviaVet</h1>
+                    <p>Sistema de Gestão Veterinária</p>
+                </div>
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="usuario">Usuário:</label>
+                        <input type="text" id="usuario" name="usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha:</label>
+                        <input type="password" id="senha" name="senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                </form>
+                <div id="login-error" class="error-message" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Tela Principal de Administração -->
+        <div id="admin-screen" class="screen" style="display: none;">
+            <header class="header">
+                <h1>🐾 LiviaVet - Painel Administrativo</h1>
+                <div class="user-info">
+                    <span id="user-name"></span>
+                    <button id="logout-btn" class="btn btn-secondary">Sair</button>
+                </div>
+            </header>
+            
+            <nav class="main-nav">
+                <button class="nav-btn" data-screen="proprietarios">👥 Proprietários</button>
+                <button class="nav-btn" data-screen="medicamentos">💊 Medicamentos</button>
+                <button class="nav-btn" data-screen="animais">🐕 Animais</button>
+                <button class="nav-btn" data-screen="consultas">📋 Consultas</button>
+            </nav>
+            
+            <main class="main-content">
+                <div class="welcome-message">
+                    <h2>Bem-vindo ao Sistema de Gestão Veterinária</h2>
+                    <p>Selecione uma opção no menu acima para começar.</p>
+                </div>
+            </main>
+        </div>
+
+        <!-- Tela de Proprietários -->
+        <div id="proprietarios-screen" class="screen" style="display: none;">
+            <header class="header">
+                <h1>👥 Cadastro de Proprietários</h1>
+                <button id="back-to-admin-1" class="btn btn-secondary">← Voltar</button>
+            </header>
+            
+            <div class="content-wrapper">
+                <div class="form-section">
+                    <h3>Novo Proprietário</h3>
+                    <form id="proprietario-form" class="form">
+                        <div class="form-group">
+                            <label for="prop-nome">Nome:</label>
+                            <input type="text" id="prop-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-telefone">Telefone:</label>
+                            <input type="tel" id="prop-telefone" name="telefone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-endereco">Endereço:</label>
+                            <textarea id="prop-endereco" name="endereco" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="prop-observacao">Observação:</label>
+                            <textarea id="prop-observacao" name="observacao"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="clear-proprietario" class="btn btn-secondary">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="list-section">
+                    <h3>Proprietários Cadastrados</h3>
+                    <div id="proprietarios-list" class="list-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Medicamentos -->
+        <div id="medicamentos-screen" class="screen" style="display: none;">
+            <header class="header">
+                <h1>💊 Cadastro de Medicamentos</h1>
+                <button id="back-to-admin-2" class="btn btn-secondary">← Voltar</button>
+            </header>
+            
+            <div class="content-wrapper">
+                <div class="form-section">
+                    <h3>Novo Medicamento</h3>
+                    <form id="medicamento-form" class="form">
+                        <div class="form-group">
+                            <label for="med-nome">Nome:</label>
+                            <input type="text" id="med-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="med-laboratorio">Laboratório:</label>
+                            <input type="text" id="med-laboratorio" name="laboratorio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="med-apresentacao">Apresentação:</label>
+                            <select id="med-apresentacao" name="apresentacao" required>
+                                <option value="">Selecione...</option>
+                                <option value="caixa">Caixa</option>
+                                <option value="ampola">Ampola</option>
+                                <option value="comprimido">Comprimido</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="med-valor-compra">Valor de Compra (R$):</label>
+                            <input type="number" id="med-valor-compra" name="valor_compra" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="med-margem-lucro">Margem de Lucro (%):</label>
+                            <input type="number" id="med-margem-lucro" name="margem_lucro" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="med-valor-venda">Valor de Venda (R$):</label>
+                            <input type="number" id="med-valor-venda" name="valor_venda" step="0.01" readonly>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="clear-medicamento" class="btn btn-secondary">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="list-section">
+                    <h3>Medicamentos Cadastrados</h3>
+                    <div id="medicamentos-list" class="list-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Animais -->
+        <div id="animais-screen" class="screen" style="display: none;">
+            <header class="header">
+                <h1>🐕 Cadastro de Animais</h1>
+                <button id="back-to-admin-3" class="btn btn-secondary">← Voltar</button>
+            </header>
+            
+            <div class="content-wrapper">
+                <div class="form-section">
+                    <h3>Novo Animal</h3>
+                    <form id="animal-form" class="form">
+                        <div class="form-group">
+                            <label for="animal-nome">Nome:</label>
+                            <input type="text" id="animal-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="animal-raca">Raça:</label>
+                            <input type="text" id="animal-raca" name="raca" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="animal-proprietario">Proprietário:</label>
+                            <select id="animal-proprietario" name="proprietario_id" required>
+                                <option value="">Selecione um proprietário...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="animal-data-nascimento">Data de Nascimento:</label>
+                            <input type="date" id="animal-data-nascimento" name="data_nascimento" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="animal-observacao">Observação:</label>
+                            <textarea id="animal-observacao" name="observacao"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="clear-animal" class="btn btn-secondary">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="list-section">
+                    <h3>Animais Cadastrados</h3>
+                    <div id="animais-list" class="list-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tela de Consultas -->
+        <div id="consultas-screen" class="screen" style="display: none;">
+            <header class="header">
+                <h1>📋 Registro de Consultas</h1>
+                <button id="back-to-admin-4" class="btn btn-secondary">← Voltar</button>
+            </header>
+            
+            <div class="content-wrapper">
+                <div class="form-section">
+                    <h3>Nova Consulta</h3>
+                    <form id="consulta-form" class="form">
+                        <div class="form-group">
+                            <label for="consulta-data">Data da Consulta:</label>
+                            <input type="date" id="consulta-data" name="data_consulta" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="consulta-animal">Animal:</label>
+                            <select id="consulta-animal" name="animal_id" required>
+                                <option value="">Selecione um animal...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="consulta-proprietario">Proprietário:</label>
+                            <input type="text" id="consulta-proprietario" name="proprietario" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="consulta-observacoes">Observações:</label>
+                            <textarea id="consulta-observacoes" name="observacoes" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="consulta-medicamentos">Medicamentos e Procedimentos:</label>
+                            <textarea id="consulta-medicamentos" name="medicamentos_procedimentos" rows="4" placeholder="Descreva medicamentos, dosagens e procedimentos realizados..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button type="button" id="clear-consulta" class="btn btn-secondary">Limpar</button>
+                    </form>
+                </div>
+                
+                <div class="list-section">
+                    <h3>Consultas Registradas</h3>
+                    <div id="consultas-list" class="list-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
