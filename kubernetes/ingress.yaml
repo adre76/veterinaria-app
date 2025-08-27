@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: veterinaria.local
+  - host: ubuntu-master.com
     http:
       paths:
       - path: /

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: veterinaria-app
-        image: docker.io/andrepereira21/vetpython:latest
+        image: veterinaria-app:latest
         ports:
         - containerPort: 8080
         env:
@@ -45,13 +45,13 @@ spec:
             cpu: "500m"
         livenessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
+            path: /healthz
             port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5
